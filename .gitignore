@@ -1,0 +1,17 @@
+# Day & Night Cycle build output
+build/
+build-*/
+*.obj
+*.lib
+*.dll
+*.zip
+
+# Local runtime data
+Logs/
+Saves/
+
+# Editor and operating-system files
+.vs/
+.vscode/
+Thumbs.db
+Desktop.ini
