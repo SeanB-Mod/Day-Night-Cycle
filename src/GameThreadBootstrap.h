@@ -47,7 +47,7 @@ static DWORD worker(void*){
     auto post=(BOOL(*)(HWND,unsigned,uptr,i64))resolve_export(u,"PostMessageA");
     p78_nextHook=(decltype(p78_nextHook))resolve_export(u,"CallNextHookEx");
     if(!p78_threadId||!p78_clock||!enumerate||!hook||!post||!p78_nextHook||!p70_windowProcess||!p70_processId||!p70_className){log_raw("DAY & NIGHT CYCLE ERROR: message-dispatch API missing.\r\n");return 0;}
-    log_raw("Day & Night Cycle v1.0 runtime starting.\r\n");
+    log_raw("Day & Night Cycle v1.1 runtime starting.\r\n");
     pSleep(15000);
     for(int i=0;i<120&&!p78_window;++i){enumerate(p78_find_window,0);if(!p78_window)pSleep(1000);}
     if(!p78_window){log_raw("DAY & NIGHT CYCLE ERROR: Unity window not found within timeout.\r\n");return 0;}

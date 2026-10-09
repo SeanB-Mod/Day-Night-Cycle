@@ -1,4 +1,4 @@
-# Day & Night Cycle v1.0
+# Day & Night Cycle v1.1
 
 Day & Night Cycle adds manual and automatic lighting control to Two Point Museum.
 
@@ -6,6 +6,9 @@ Day & Night Cycle adds manual and automatic lighting control to Two Point Museum
 
 - Select Dawn, Day, Dusk or Night lighting manually.
 - Smooth transitions between lighting states.
+- Move the exterior sun continuously along a normalized directional arc between opposing sunrise and sunset bearings, passing through each museum's exact authored daytime rotation and completing its hidden return during settled Night.
+- Preserve readable shadows into Dusk, fade them once against the darkening sky, keep direct sunlight at zero throughout Night, and prepare the relocated shadow caster invisibly before light and shadows fade in with Dawn.
+- Shorten the lowest Dawn and Dusk shadows, preserve readable low-light contrast with a gentle shadow curve, and give Dusk a warmer sunset character.
 - Run one complete 24-hour lighting cycle over an in-game week or month.
 - Adjust the relative length of Dawn, Day, Dusk and Night with three timeline dividers.
 - Restore the standard 24-hour phase distribution with one button.

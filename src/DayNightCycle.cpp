@@ -311,13 +311,13 @@ static void string_ascii(Il2CppString* s,char* out,usize cap){ if(!out||cap==0)r
 
 struct F2{float x,y;}; struct F3{float x,y,z;}; struct F4{float x,y,z,w;}; struct Rect4{float x,y,width,height;};
 
-static Il2CppClass *C_Object,*C_Component,*C_GameObject,*C_Transform,*C_RectTransform,*C_RectTransformUtility,*C_Resources,*C_Shader,*C_Behaviour,*C_Graphic,*C_Selectable,*C_Light,*C_UIImage,*C_Texture2D,*C_Sprite,*C_ImageConversion,*C_Byte,*C_TooltipSpawner;
-static const MethodInfo *M_Object_get_name,*M_Object_GetInstanceID,*M_Object_Instantiate,*M_Object_Destroy,*M_Resources_FindAll,*M_GameObject_GetComponents,*M_GameObject_SetActive,*M_GameObject_get_activeInHierarchy,*M_GameObject_get_transform,*M_Transform_get_parent,*M_Transform_SetParent,*M_Transform_IsChildOf,*M_Transform_SetSiblingIndex,*M_Transform_SetAsLastSibling,*M_Transform_InverseTransformPoint,*M_Component_get_gameObject;
+static Il2CppClass *C_Object,*C_Component,*C_GameObject,*C_Transform,*C_Quaternion,*C_RectTransform,*C_RectTransformUtility,*C_Resources,*C_Shader,*C_Behaviour,*C_Graphic,*C_Selectable,*C_Light,*C_UIImage,*C_Texture2D,*C_Sprite,*C_ImageConversion,*C_Byte,*C_TooltipSpawner;
+static const MethodInfo *M_Object_get_name,*M_Object_GetInstanceID,*M_Object_Instantiate,*M_Object_Destroy,*M_Resources_FindAll,*M_GameObject_GetComponents,*M_GameObject_SetActive,*M_GameObject_get_activeInHierarchy,*M_GameObject_get_transform,*M_Transform_get_parent,*M_Transform_SetParent,*M_Transform_IsChildOf,*M_Transform_SetSiblingIndex,*M_Transform_SetAsLastSibling,*M_Transform_InverseTransformPoint,*M_Transform_get_eulerAngles,*M_Transform_set_eulerAngles,*M_Transform_get_rotation,*M_Transform_set_rotation,*M_Quaternion_Euler,*M_Component_get_gameObject;
 static const MethodInfo *M_RectTransform_get_rect,*M_RectTransform_get_anchoredPosition,*M_RectTransform_set_anchoredPosition,*M_RectTransform_get_anchorMin,*M_RectTransform_set_anchorMin,*M_RectTransform_get_anchorMax,*M_RectTransform_set_anchorMax,*M_RectTransform_get_sizeDelta,*M_RectTransform_set_sizeDelta,*M_RectTransform_get_pivot,*M_RectTransform_set_pivot,*M_RectTransformUtility_ScreenPointToLocalPointInRectangle;
 static const MethodInfo *M_Behaviour_set_enabled,*M_Graphic_set_raycastTarget,*M_Graphic_set_color,*M_Selectable_set_targetGraphic;
 static const MethodInfo *M_Texture2D_ctor,*M_ImageConversion_LoadImage,*M_Sprite_Create,*M_UIImage_set_sprite,*M_UIImage_set_overrideSprite,*M_UIImage_set_preserveAspect,*M_Tooltip_Reset,*M_Tooltip_CursorOver,*M_Tooltip_CursorOut;
 static const MethodInfo *M_Shader_PropertyToID,*M_Shader_SetGlobalColorInt;
-static const MethodInfo *M_Component_get_transform,*M_Light_set_color,*M_Light_set_intensity,*M_Light_get_shadowStrength,*M_Light_set_shadowStrength;
+static const MethodInfo *M_Component_get_transform,*M_Light_set_color,*M_Light_set_intensity,*M_Light_get_shadowStrength,*M_Light_set_shadowStrength,*M_Light_get_shadows,*M_Light_set_shadows;
 
 static void log_resolve(const char* kind,const char* name,bool ok){ char b[512]; psprintf(b,"RESOLVE %-8s %-56s : %s\r\n",kind,name,ok?"OK":"MISSING"); log_raw(b); }
 
@@ -327,6 +327,7 @@ static bool init_unity_methods(){
     C_Component=find_class("UnityEngine","Component"); log_resolve("class","UnityEngine.Component",C_Component!=nullptr);
     C_GameObject=find_class("UnityEngine","GameObject"); log_resolve("class","UnityEngine.GameObject",C_GameObject!=nullptr);
     C_Transform=find_class("UnityEngine","Transform"); log_resolve("class","UnityEngine.Transform",C_Transform!=nullptr);
+    C_Quaternion=find_class("UnityEngine","Quaternion"); log_resolve("class","UnityEngine.Quaternion",C_Quaternion!=nullptr);
     C_RectTransform=find_class("UnityEngine","RectTransform"); log_resolve("class","UnityEngine.RectTransform",C_RectTransform!=nullptr);
     C_RectTransformUtility=find_class("UnityEngine","RectTransformUtility"); log_resolve("class","UnityEngine.RectTransformUtility",C_RectTransformUtility!=nullptr);
     C_Resources=find_class("UnityEngine","Resources"); log_resolve("class","UnityEngine.Resources",C_Resources!=nullptr);
@@ -354,6 +355,13 @@ static bool init_unity_methods(){
     M_Transform_SetSiblingIndex=find_method_param1(C_Transform,"SetSiblingIndex","System.Int32"); log_resolve("method","Transform.SetSiblingIndex(Int32)",M_Transform_SetSiblingIndex!=nullptr);
     M_Transform_SetAsLastSibling=il2cpp_class_get_method_from_name(C_Transform,"SetAsLastSibling",0); log_resolve("method","Transform.SetAsLastSibling()",M_Transform_SetAsLastSibling!=nullptr);
     M_Transform_InverseTransformPoint=find_method_param1(C_Transform,"InverseTransformPoint","UnityEngine.Vector3"); log_resolve("method","Transform.InverseTransformPoint(Vector3)",M_Transform_InverseTransformPoint!=nullptr);
+    M_Transform_get_eulerAngles=il2cpp_class_get_method_from_name(C_Transform,"get_eulerAngles",0);
+    M_Transform_set_eulerAngles=find_method_param1(C_Transform,"set_eulerAngles","UnityEngine.Vector3");
+    M_Transform_get_rotation=il2cpp_class_get_method_from_name(C_Transform,"get_rotation",0);
+    M_Transform_set_rotation=find_method_param1(C_Transform,"set_rotation","UnityEngine.Quaternion");
+    M_Quaternion_Euler=find_method_param1(C_Quaternion,"Euler","UnityEngine.Vector3");
+    log_resolve("method","Transform.eulerAngles [sun-motion fallback]",M_Transform_get_eulerAngles&&M_Transform_set_eulerAngles);
+    log_resolve("method","Transform.rotation + Quaternion.Euler [directional sun arc]",M_Transform_get_rotation&&M_Transform_set_rotation&&M_Quaternion_Euler);
     if(C_RectTransform){
         M_RectTransform_get_rect=il2cpp_class_get_method_from_name(C_RectTransform,"get_rect",0);
         M_RectTransform_get_anchoredPosition=il2cpp_class_get_method_from_name(C_RectTransform,"get_anchoredPosition",0);
@@ -375,10 +383,11 @@ static bool init_unity_methods(){
     log_resolve("method","RectTransformUtility.ScreenPointToLocalPointInRectangle(...) ",M_RectTransformUtility_ScreenPointToLocalPointInRectangle!=nullptr);
     M_Component_get_gameObject=il2cpp_class_get_method_from_name(C_Component,"get_gameObject",0); log_resolve("method","Component.get_gameObject()",M_Component_get_gameObject!=nullptr);
     M_Component_get_transform=il2cpp_class_get_method_from_name(C_Component,"get_transform",0); log_resolve("method","Component.get_transform()",M_Component_get_transform!=nullptr);
-    if(C_Light){M_Light_set_color=find_method_param1(C_Light,"set_color","UnityEngine.Color");M_Light_set_intensity=find_method_param1(C_Light,"set_intensity","System.Single");M_Light_get_shadowStrength=il2cpp_class_get_method_from_name(C_Light,"get_shadowStrength",0);M_Light_set_shadowStrength=find_method_param1(C_Light,"set_shadowStrength","System.Single");}
+    if(C_Light){M_Light_set_color=find_method_param1(C_Light,"set_color","UnityEngine.Color");M_Light_set_intensity=find_method_param1(C_Light,"set_intensity","System.Single");M_Light_get_shadowStrength=il2cpp_class_get_method_from_name(C_Light,"get_shadowStrength",0);M_Light_set_shadowStrength=find_method_param1(C_Light,"set_shadowStrength","System.Single");M_Light_get_shadows=il2cpp_class_get_method_from_name(C_Light,"get_shadows",0);M_Light_set_shadows=find_method_param1(C_Light,"set_shadows","UnityEngine.LightShadows");}
     log_resolve("method","Light.set_color(Color)",M_Light_set_color!=nullptr);
     log_resolve("method","Light.set_intensity(Single)",M_Light_set_intensity!=nullptr);
     log_resolve("method","Light.shadowStrength",M_Light_get_shadowStrength&&M_Light_set_shadowStrength);
+    log_resolve("method","Light.shadows [hard night shadow-caster gate]",M_Light_get_shadows&&M_Light_set_shadows);
     if(C_Behaviour)M_Behaviour_set_enabled=find_method_param1(C_Behaviour,"set_enabled","System.Boolean");
     log_resolve("method","Behaviour.set_enabled(Boolean)",M_Behaviour_set_enabled!=nullptr);
     if(C_Graphic){ M_Graphic_set_raycastTarget=find_method_param1(C_Graphic,"set_raycastTarget","System.Boolean"); M_Graphic_set_color=find_method_param1(C_Graphic,"set_color","UnityEngine.Color"); }
@@ -391,6 +400,7 @@ static bool init_unity_methods(){
 
 static void object_name(void* obj,char* out,usize cap){ if(!obj){if(out&&cap)out[0]=0;return;} string_ascii((Il2CppString*)invoke(M_Object_get_name,obj,nullptr),out,cap); }
 static int object_id(void* obj){ return (obj&&M_Object_GetInstanceID)?boxed_i32(invoke(M_Object_GetInstanceID,obj,nullptr),0):0; }
+static F3 read_boxed_f3(Il2CppObject* o){ F3 z{0,0,0}; if(!o)return z; void* p=il2cpp_object_unbox(o); if(p)z=*(F3*)p; return z; }
 static F4 read_boxed_f4(Il2CppObject* o){ F4 z{0,0,0,0}; if(!o)return z; void* p=il2cpp_object_unbox(o); if(p)z=*(F4*)p; return z; }
 static Il2CppFieldInfo* find_field_hierarchy(Il2CppClass* c,const char* name){
     static P78MetadataCache<Il2CppFieldInfo*,256> cache;Il2CppFieldInfo* cached=nullptr;if(cache.lookup(c,"",name,cached))return cached;
@@ -506,12 +516,16 @@ static void* p50_level_from_state(void* state){
 // In-memory lighting state. Profile 0 is the captured daytime light; the
 // remaining profiles are the configured Dawn, Dusk and Night targets.
 static void* g_p91Config=nullptr; static void* g_p91ExteriorLight=nullptr; static void* g_p91InteriorLight=nullptr; static void* g_p91Environment=nullptr; static void* g_p91LightingManager=nullptr; static Il2CppClass* g_p91GameManagerClass=nullptr;
-static F4 g_p91DayColor{0,0,0,1},g_p91DaySkyColor{0,0,0,1},g_p91DaySunColor{0,0,0,1}; static float g_p91DayIntensity=0,g_p91DayShadowStrength=1;
+static F4 g_p91DayColor{0,0,0,1},g_p91DaySkyColor{0,0,0,1},g_p91DaySunColor{0,0,0,1}; static float g_p91DayIntensity=0,g_p91DayShadowStrength=1;static int g_p91DayShadowMode=2;
 static F4 g_dncDesiredLightColor{0,0,0,1},g_dncDesiredSkyColor{0,0,0,1},g_dncDesiredSunColor{0,0,0,1};static float g_dncDesiredIntensity=0,g_dncDesiredShadowStrength=1;
+static F3 g_p91DaySunEuler{0,0,0},g_dncDesiredSunEuler{0,0,0};
+static F4 g_p91DaySunRotation{0,0,0,1},g_dncDesiredSunRotation{0,0,0,1};
 static F4 g_dncTransitionStartLight{0,0,0,1},g_dncTransitionStartSky{0,0,0,1},g_dncTransitionStartSun{0,0,0,1};static float g_dncTransitionStartIntensity=0,g_dncTransitionStartShadowStrength=1;
 static F4 g_dncTransitionTargetLight{0,0,0,1},g_dncTransitionTargetSky{0,0,0,1},g_dncTransitionTargetSun{0,0,0,1};static float g_dncTransitionTargetIntensity=0,g_dncTransitionTargetShadowStrength=1;
+static F3 g_dncTransitionStartSunEuler{0,0,0},g_dncTransitionTargetSunEuler{0,0,0};
+static F4 g_dncTransitionStartSunRotation{0,0,0,1},g_dncTransitionTargetSunRotation{0,0,0,1};
 static int g_p91Profile=0; static bool g_p91Captured=false;
-struct DNCLightingBaseline { u64 configKey;F4 lightColor,skyColor,sunColor;float intensity,shadowStrength;bool used; };
+struct DNCLightingBaseline { u64 configKey;F4 lightColor,skyColor,sunColor,sunRotation;F3 sunEuler;float intensity,shadowStrength;int shadowMode;bool used; };
 static DNCLightingBaseline g_dncLightingBaselines[64]{};
 static int g_p96AutoMode=0; // 0 manual, 1 weekly, 2 monthly
 static u32 g_dncLightingEnvironmentGeneration=0;
@@ -523,10 +537,12 @@ static constexpr double DNC_DAYS_PER_MONTH=30.0;
 static void* g_dncGameClockLevel=nullptr;static void* g_dncGameTime=nullptr;static const MethodInfo* g_dncGetGameTime=nullptr;
 static bool g_dncAutoExteriorActive=false;static u32 g_dncAutoExteriorGeneration=0;static double g_dncVirtualHour=-1.0;
 static u64 g_dncAutoCycleCalculatedEpoch=0xffffffffffffffffull;static u32 g_dncAutoCycleCalculatedEnvironment=0xffffffffu;static u32 g_dncAutoCycleCalculatedPreference=0xffffffffu;static int g_dncAutoCycleCalculatedMode=-1;
+static u32 g_dncPhaseHoldUnits[4]={100,900,200,400};
 // Automatic follows continuous in-game cycle time. Manual selections use a
 // short wall-clock smoothstep so their exterior light and stable Octalux sky
 // route move together without invoking the game's noisy full lighting push.
 static constexpr u64 DNC_MANUAL_LIGHTING_TRANSITION_MS=3000;
+static constexpr u64 DNC_MANUAL_DAWN_HANDOVER_MS=750;
 static constexpr u64 DNC_MANUAL_GRADUAL_SETTLE_MS=3000;
 static u32 g_dncTransitionEnvironmentGeneration=0;
 static u64 g_dncTransitionStartedAt=0;
@@ -534,8 +550,20 @@ static u64 g_dncManualGradualSettleUntil=0;
 static int g_dncTransitionTargetProfile=-1;
 static bool g_dncTransitionInitialised=false;
 static bool g_dncTransitionActive=false;
+static bool g_dncManualDawnHandoverActive=false;
+static float g_dncDirectLightIntensityFactor=1.0f;
+static float g_dncDirectLightShadowFactor=1.0f;
+// Dusk-to-Night owns one final-output shadow curve. This prevents the profile
+// fade and the generic intensity response from multiplying into an early,
+// apparently abrupt disappearance while the scene is still visibly lit.
+static bool g_dncShadowStrengthIsFinal=false;
+// Keep Unity's caster stable across both visible twilight fades. It is disabled
+// only for the middle, fully dark part of the Night handover while the sun is
+// relocated, then restored at zero direct light and zero shadow strength.
+static bool g_dncShadowCasterEnabled=true;
 static bool g_dncPreferencesReady=false;
 static bool g_dncLightingHoldReady=false;
+static bool g_dncApplicationWasTemporarilyBusy=false;
 static const MethodInfo* g_dncPushLightingSettings=nullptr;
 static void* g_dncOctaluxFeature=nullptr;
 static const MethodInfo* g_dncOctaluxSetSkyColor=nullptr;
@@ -553,30 +581,120 @@ static void dncRestoreOctaluxGradualQuality();
 // Lodge_V1's game-authored baseline is its Night state.  Day and dusk must be
 // calculated above that baseline rather than treating it as an ordinary day.
 static bool g_p91IsLodge=false;
+static F3 dncLerpF3(F3 from,F3 to,float amount){return F3{from.x+(to.x-from.x)*amount,from.y+(to.y-from.y)*amount,from.z+(to.z-from.z)*amount};}
 static F4 dncLerpF4(F4 from,F4 to,float amount){return F4{from.x+(to.x-from.x)*amount,from.y+(to.y-from.y)*amount,from.z+(to.z-from.z)*amount,from.w+(to.w-from.w)*amount};}
 static float dncLerpFloat(float from,float to,float amount){return from+(to-from)*amount;}
 static float dncSmoothStep01(float value){if(value<=0)return 0;if(value>=1)return 1;return value*value*(3.0f-2.0f*value);}
+static float dncSqrt01(float value){if(value<=0)return 0;if(value>=1)return 1;float low=0.0f,high=1.0f;for(int i=0;i<14;++i){float middle=(low+high)*0.5f;if(middle*middle<value)low=middle;else high=middle;}return(low+high)*0.5f;}
+static float dncNearestAngle(float current,float target){while(target-current>180.0f)target-=360.0f;while(target-current<-180.0f)target+=360.0f;return target;}
+static F3 dncNearestEuler(F3 current,F3 target){return F3{dncNearestAngle(current.x,target.x),dncNearestAngle(current.y,target.y),dncNearestAngle(current.z,target.z)};}
+static float dncSqrtPositive(float value){if(value<=0.0f)return 0.0f;float estimate=value>=1.0f?value:1.0f;for(int i=0;i<8;++i)estimate=0.5f*(estimate+value/estimate);return estimate;}
+static F4 dncNormalizeQuaternion(F4 value){float length=dncSqrtPositive(value.x*value.x+value.y*value.y+value.z*value.z+value.w*value.w);if(length<=0.00001f)return F4{0,0,0,1};float inverse=1.0f/length;return F4{value.x*inverse,value.y*inverse,value.z*inverse,value.w*inverse};}
+static F4 dncNlerpQuaternion(F4 from,F4 to,float amount){
+    if(amount<=0.0f)return dncNormalizeQuaternion(from);if(amount>=1.0f)return dncNormalizeQuaternion(to);
+    float dot=from.x*to.x+from.y*to.y+from.z*to.z+from.w*to.w;if(dot<0.0f)to=F4{-to.x,-to.y,-to.z,-to.w};
+    return dncNormalizeQuaternion(F4{dncLerpFloat(from.x,to.x,amount),dncLerpFloat(from.y,to.y,amount),dncLerpFloat(from.z,to.z,amount),dncLerpFloat(from.w,to.w,amount)});
+}
+static F4 dncAlignQuaternion(F4 reference,F4 value){float dot=reference.x*value.x+reference.y*value.y+reference.z*value.z+reference.w*value.w;return dot<0.0f?F4{-value.x,-value.y,-value.z,-value.w}:value;}
+static F4 dncQuaternionDerivative(F4 from,F4 to,float seconds){if(seconds<=0.00001f)return F4{0,0,0,0};float inverse=1.0f/seconds;return F4{(to.x-from.x)*inverse,(to.y-from.y)*inverse,(to.z-from.z)*inverse,(to.w-from.w)*inverse};}
+static F4 dncHermiteQuaternion(F4 from,F4 to,F4 fromDerivative,F4 toDerivative,float seconds,float amount){
+    if(amount<=0.0f)return dncNormalizeQuaternion(from);if(amount>=1.0f)return dncNormalizeQuaternion(to);
+    float amount2=amount*amount,amount3=amount2*amount;float h00=2.0f*amount3-3.0f*amount2+1.0f,h10=amount3-2.0f*amount2+amount,h01=-2.0f*amount3+3.0f*amount2,h11=amount3-amount2;
+    return dncNormalizeQuaternion(F4{h00*from.x+h10*seconds*fromDerivative.x+h01*to.x+h11*seconds*toDerivative.x,h00*from.y+h10*seconds*fromDerivative.y+h01*to.y+h11*seconds*toDerivative.y,h00*from.z+h10*seconds*fromDerivative.z+h01*to.z+h11*seconds*toDerivative.z,h00*from.w+h10*seconds*fromDerivative.w+h01*to.w+h11*seconds*toDerivative.w});
+}
+static bool dncQuaternionFromEuler(F3 euler,F4& rotation){if(!M_Quaternion_Euler)return false;void* args[1]={&euler};Il2CppObject* boxed=(Il2CppObject*)invoke(M_Quaternion_Euler,nullptr,args);if(!boxed)return false;rotation=dncNormalizeQuaternion(read_boxed_f4(boxed));return true;}
+struct DNCSunPose { F3 euler;F4 rotation; };
+static u32 g_dncSunArcGeneration=0xffffffffu;
+static F4 g_dncSunriseRotation{0,0,0,1},g_dncSunsetRotation{0,0,0,1};
+static void dncNightHandoverWindow(double nightLead,double& start,double& duration){duration=nightLead<1.5?nightLead*0.5:0.75;start=24.0-nightLead;}
+static void dncPrepareSunArcRotations(){
+    if(g_dncSunArcGeneration==g_dncLightingEnvironmentGeneration)return;
+    F3 sunriseEuler{32.0f,g_p91DaySunEuler.y+90.0f,g_p91DaySunEuler.z};F3 sunsetEuler{32.0f,g_p91DaySunEuler.y-90.0f,g_p91DaySunEuler.z};
+    g_dncSunriseRotation=g_p91DaySunRotation;g_dncSunsetRotation=g_p91DaySunRotation;
+    dncQuaternionFromEuler(sunriseEuler,g_dncSunriseRotation);dncQuaternionFromEuler(sunsetEuler,g_dncSunsetRotation);
+    g_dncSunArcGeneration=g_dncLightingEnvironmentGeneration;
+}
+// Build the visible solar route from three true rotations: opposing sunrise
+// and sunset bearings plus the museum's exact authored noon quaternion. The
+// normalized quaternion interpolation moves the light direction over the unit
+// sphere instead of independently animating Euler axes, removing the bowed
+// screen-space turn seen around midday. The conservative 32-degree endpoint
+// elevation still avoids the enormous near-horizon shadows produced by the
+// game's directional light. Timing remains tied to the user's phase lengths.
+// During the early settled-Night handover the direct light fades out, relocates
+// from sunset to sunrise while invisible, and fades back in. Doing this just
+// after Dusk has reached its Night endpoint avoids a second dark dip immediately
+// before an otherwise continuous Dawn.
+static DNCSunPose dncSunPoseAtHour(double hour,float* directLightFactor=nullptr){
+    while(hour<0.0)hour+=24.0;while(hour>=24.0)hour-=24.0;
+    if(directLightFactor)*directLightFactor=1.0f;
+    dncPrepareSunArcRotations();
+    float noonElevation=g_p91DaySunEuler.x;while(noonElevation>180.0f)noonElevation-=360.0f;while(noonElevation<-180.0f)noonElevation+=360.0f;if(noonElevation<0.0f)noonElevation=-noonElevation;
+    const float minimumElevation=32.0f,maximumBearingOffset=90.0f;float elevation=minimumElevation,amount=0.0f,bearingOffset=-maximumBearingOffset;
+    double dawnHold=(double)g_dncPhaseHoldUnits[0]/100.0,dayHold=(double)g_dncPhaseHoldUnits[1]/100.0,nightLead=(double)g_dncPhaseHoldUnits[3]/200.0;
+    double arcStart=nightLead,authoredNoon=nightLead+3.0+dawnHold+2.0+dayHold*0.5,arcEnd=24.0-nightLead-1.0;
+    F4 noonRotation=dncNormalizeQuaternion(g_p91DaySunRotation);F4 sunriseRotation=dncAlignQuaternion(noonRotation,g_dncSunriseRotation);F4 sunsetRotation=dncAlignQuaternion(noonRotation,g_dncSunsetRotation);float morningSeconds=(float)(authoredNoon-arcStart),eveningSeconds=(float)(arcEnd-authoredNoon),arcSeconds=(float)(arcEnd-arcStart);F4 sunriseDerivative=dncQuaternionDerivative(sunriseRotation,noonRotation,morningSeconds),noonDerivative=dncQuaternionDerivative(sunriseRotation,sunsetRotation,arcSeconds),sunsetDerivative=dncQuaternionDerivative(noonRotation,sunsetRotation,eveningSeconds);
+    DNCSunPose pose{F3{minimumElevation,g_p91DaySunEuler.y-maximumBearingOffset,g_p91DaySunEuler.z},g_dncSunsetRotation};
+    if(hour>=arcStart&&hour<authoredNoon){float pathAmount=(float)((hour-arcStart)/(authoredNoon-arcStart));amount=dncSmoothStep01(pathAmount);elevation=dncLerpFloat(minimumElevation,noonElevation,amount);bearingOffset=dncLerpFloat(maximumBearingOffset,0.0f,pathAmount);pose.rotation=dncHermiteQuaternion(sunriseRotation,noonRotation,sunriseDerivative,noonDerivative,morningSeconds,pathAmount);float dawnReveal=(float)(hour-arcStart);if(dawnReveal<0.0f)dawnReveal=0.0f;if(dawnReveal>1.0f)dawnReveal=1.0f;if(directLightFactor)*directLightFactor=dncSmoothStep01(dawnReveal);}
+    else if(hour>=authoredNoon&&hour<arcEnd){float pathAmount=(float)((hour-authoredNoon)/(arcEnd-authoredNoon));amount=dncSmoothStep01(pathAmount);elevation=dncLerpFloat(noonElevation,minimumElevation,amount);bearingOffset=dncLerpFloat(0.0f,-maximumBearingOffset,pathAmount);pose.rotation=dncHermiteQuaternion(noonRotation,sunsetRotation,noonDerivative,sunsetDerivative,eveningSeconds,pathAmount);}
+    else{
+        double handoverStart=0.0,handoverDuration=0.0;dncNightHandoverWindow(nightLead,handoverStart,handoverDuration);
+        double handoverEnd=handoverStart+handoverDuration;
+        if(hour>=handoverStart&&hour<handoverEnd&&handoverDuration>0.0){
+            float handover=(float)((hour-handoverStart)/handoverDuration);
+            if(handover<0.33333334f){
+                float fade=dncSmoothStep01(handover*3.0f);if(directLightFactor)*directLightFactor=1.0f-fade;
+            }else if(handover<0.66666669f){
+                float relocate=dncSmoothStep01((handover-0.33333334f)*3.0f);bearingOffset=dncLerpFloat(-maximumBearingOffset,maximumBearingOffset,relocate);pose.rotation=dncNlerpQuaternion(g_dncSunsetRotation,g_dncSunriseRotation,relocate);if(directLightFactor)*directLightFactor=0.0f;
+            }else{bearingOffset=maximumBearingOffset;pose.rotation=g_dncSunriseRotation;if(directLightFactor)*directLightFactor=0.0f;}
+        }else if(hour>=handoverEnd||hour<nightLead){
+            bearingOffset=maximumBearingOffset;pose.rotation=g_dncSunriseRotation;if(directLightFactor)*directLightFactor=0.0f;
+        }
+    }
+    pose.euler=F3{elevation,g_p91DaySunEuler.y+bearingOffset,g_p91DaySunEuler.z};return pose;
+}
+static double dncManualProfileHour(int profile){
+    double dawnHold=(double)g_dncPhaseHoldUnits[0]/100.0,dayHold=(double)g_dncPhaseHoldUnits[1]/100.0,duskHold=(double)g_dncPhaseHoldUnits[2]/100.0,nightLead=(double)g_dncPhaseHoldUnits[3]/200.0;
+    double dawn=nightLead+3.0+dawnHold*0.5,day=nightLead+3.0+dawnHold+2.0+dayHold*0.5,dusk=nightLead+3.0+dawnHold+2.0+dayHold+1.0+duskHold*0.5;
+    return profile==3?dawn:profile==1?dusk:profile==2?0.0:day;
+}
 static bool dncConvertHDRSunToUnityLight(F4 hdrSun,F4& lightColor,float& lightIntensity);
 static void dncAdvanceLightingTransition(u64 now){
     if(!g_dncTransitionInitialised)return;
-    float amount=1.0f;if(g_dncTransitionActive&&now&&g_dncTransitionStartedAt&&now<g_dncTransitionStartedAt+DNC_MANUAL_LIGHTING_TRANSITION_MS)amount=dncSmoothStep01((float)(now-g_dncTransitionStartedAt)/(float)DNC_MANUAL_LIGHTING_TRANSITION_MS);
+    g_dncShadowStrengthIsFinal=false;
+    float amount=1.0f;
+    if(g_dncTransitionActive&&now&&g_dncTransitionStartedAt&&now<g_dncTransitionStartedAt+DNC_MANUAL_LIGHTING_TRANSITION_MS){
+        u64 elapsed=now>g_dncTransitionStartedAt?now-g_dncTransitionStartedAt:0;
+        if(g_dncManualDawnHandoverActive&&elapsed<DNC_MANUAL_DAWN_HANDOVER_MS){
+            amount=0.0f;float handover=(float)elapsed/(float)DNC_MANUAL_DAWN_HANDOVER_MS;
+            if(handover<0.33333334f){float fade=dncSmoothStep01(handover*3.0f);g_dncDesiredSunEuler=g_dncTransitionStartSunEuler;g_dncDesiredSunRotation=g_dncTransitionStartSunRotation;g_dncDirectLightIntensityFactor=1.0f-fade;}
+            else if(handover<0.66666669f){float relocate=dncSmoothStep01((handover-0.33333334f)*3.0f);g_dncDesiredSunEuler=dncLerpF3(g_dncTransitionStartSunEuler,g_dncTransitionTargetSunEuler,relocate);g_dncDesiredSunRotation=dncNlerpQuaternion(g_dncTransitionStartSunRotation,g_dncTransitionTargetSunRotation,relocate);g_dncDirectLightIntensityFactor=0.0f;}
+            else{float fade=dncSmoothStep01((handover-0.66666669f)*3.0f);g_dncDesiredSunEuler=g_dncTransitionTargetSunEuler;g_dncDesiredSunRotation=g_dncTransitionTargetSunRotation;g_dncDirectLightIntensityFactor=fade;}
+        }else{
+            u64 colourElapsed=g_dncManualDawnHandoverActive?elapsed-DNC_MANUAL_DAWN_HANDOVER_MS:elapsed;
+            u64 colourDuration=g_dncManualDawnHandoverActive?DNC_MANUAL_LIGHTING_TRANSITION_MS-DNC_MANUAL_DAWN_HANDOVER_MS:DNC_MANUAL_LIGHTING_TRANSITION_MS;
+            amount=dncSmoothStep01((float)colourElapsed/(float)colourDuration);g_dncDesiredSunEuler=g_dncManualDawnHandoverActive?g_dncTransitionTargetSunEuler:dncLerpF3(g_dncTransitionStartSunEuler,g_dncTransitionTargetSunEuler,amount);g_dncDesiredSunRotation=g_dncManualDawnHandoverActive?g_dncTransitionTargetSunRotation:dncNlerpQuaternion(g_dncTransitionStartSunRotation,g_dncTransitionTargetSunRotation,amount);g_dncDirectLightIntensityFactor=1.0f;
+        }
+        g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=true;
+    }else{g_dncDesiredSunEuler=g_dncTransitionTargetSunEuler;g_dncDesiredSunRotation=g_dncTransitionTargetSunRotation;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=g_dncTransitionTargetProfile!=2;}
     g_dncDesiredSkyColor=dncLerpF4(g_dncTransitionStartSky,g_dncTransitionTargetSky,amount);g_dncDesiredSunColor=dncLerpF4(g_dncTransitionStartSun,g_dncTransitionTargetSun,amount);g_dncDesiredShadowStrength=dncLerpFloat(g_dncTransitionStartShadowStrength,g_dncTransitionTargetShadowStrength,amount);
     // Match Automatic exactly: interpolate the authored HDR sun first, then
     // ask the game to convert that one intermediate value to Unity light.
     // Falling back to endpoint interpolation keeps the route safe if the
     // game's conversion getters are unavailable during a scene transition.
     if(!dncConvertHDRSunToUnityLight(g_dncDesiredSunColor,g_dncDesiredLightColor,g_dncDesiredIntensity)){g_dncDesiredLightColor=dncLerpF4(g_dncTransitionStartLight,g_dncTransitionTargetLight,amount);g_dncDesiredIntensity=dncLerpFloat(g_dncTransitionStartIntensity,g_dncTransitionTargetIntensity,amount);}
-    if(amount>=1.0f)g_dncTransitionActive=false;
+    if(amount>=1.0f){g_dncTransitionActive=false;g_dncManualDawnHandoverActive=false;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=g_dncTransitionTargetProfile!=2;}
 }
-static void dncSetLightingTransitionTarget(int profile,F4 light,F4 sky,F4 sun,float intensity,float shadowStrength){
+static void dncSetLightingTransitionTarget(int profile,F4 light,F4 sky,F4 sun,F3 sunEuler,F4 sunRotation,float intensity,float shadowStrength){
     u64 now=p78_clock?p78_clock():0;
+    g_dncShadowStrengthIsFinal=false;
     if(!g_dncTransitionInitialised||g_dncTransitionEnvironmentGeneration!=g_dncLightingEnvironmentGeneration){
-        g_dncTransitionEnvironmentGeneration=g_dncLightingEnvironmentGeneration;g_dncTransitionTargetProfile=profile;g_dncTransitionInitialised=true;g_dncTransitionActive=false;g_dncTransitionStartedAt=0;g_dncManualGradualSettleUntil=now?now+DNC_MANUAL_GRADUAL_SETTLE_MS:0;
-        g_dncTransitionStartLight=g_dncTransitionTargetLight=g_dncDesiredLightColor=light;g_dncTransitionStartSky=g_dncTransitionTargetSky=g_dncDesiredSkyColor=sky;g_dncTransitionStartSun=g_dncTransitionTargetSun=g_dncDesiredSunColor=sun;g_dncTransitionStartIntensity=g_dncTransitionTargetIntensity=g_dncDesiredIntensity=intensity;g_dncTransitionStartShadowStrength=g_dncTransitionTargetShadowStrength=g_dncDesiredShadowStrength=shadowStrength;return;
+        g_dncTransitionEnvironmentGeneration=g_dncLightingEnvironmentGeneration;g_dncTransitionTargetProfile=profile;g_dncTransitionInitialised=true;g_dncTransitionActive=false;g_dncManualDawnHandoverActive=false;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=profile!=2;g_dncTransitionStartedAt=0;g_dncManualGradualSettleUntil=now?now+DNC_MANUAL_GRADUAL_SETTLE_MS:0;
+        g_dncTransitionStartLight=g_dncTransitionTargetLight=g_dncDesiredLightColor=light;g_dncTransitionStartSky=g_dncTransitionTargetSky=g_dncDesiredSkyColor=sky;g_dncTransitionStartSun=g_dncTransitionTargetSun=g_dncDesiredSunColor=sun;g_dncTransitionStartSunEuler=g_dncTransitionTargetSunEuler=g_dncDesiredSunEuler=sunEuler;g_dncTransitionStartSunRotation=g_dncTransitionTargetSunRotation=g_dncDesiredSunRotation=sunRotation;g_dncTransitionStartIntensity=g_dncTransitionTargetIntensity=g_dncDesiredIntensity=intensity;g_dncTransitionStartShadowStrength=g_dncTransitionTargetShadowStrength=g_dncDesiredShadowStrength=shadowStrength;return;
     }
     if(profile==g_dncTransitionTargetProfile)return;
-    dncAdvanceLightingTransition(now);g_dncTransitionStartLight=g_dncDesiredLightColor;g_dncTransitionStartSky=g_dncDesiredSkyColor;g_dncTransitionStartSun=g_dncDesiredSunColor;g_dncTransitionStartIntensity=g_dncDesiredIntensity;g_dncTransitionStartShadowStrength=g_dncDesiredShadowStrength;
-    g_dncTransitionTargetLight=light;g_dncTransitionTargetSky=sky;g_dncTransitionTargetSun=sun;g_dncTransitionTargetIntensity=intensity;g_dncTransitionTargetShadowStrength=shadowStrength;g_dncTransitionTargetProfile=profile;g_dncTransitionStartedAt=now;g_dncTransitionActive=now!=0;g_dncManualGradualSettleUntil=now?now+DNC_MANUAL_LIGHTING_TRANSITION_MS+DNC_MANUAL_GRADUAL_SETTLE_MS:0;
+    int previousProfile=g_dncTransitionTargetProfile;dncAdvanceLightingTransition(now);g_dncTransitionStartLight=g_dncDesiredLightColor;g_dncTransitionStartSky=g_dncDesiredSkyColor;g_dncTransitionStartSun=g_dncDesiredSunColor;g_dncTransitionStartSunEuler=g_dncDesiredSunEuler;g_dncTransitionStartSunRotation=g_dncDesiredSunRotation;g_dncTransitionStartIntensity=g_dncDesiredIntensity;g_dncTransitionStartShadowStrength=g_dncDesiredShadowStrength;
+    g_dncTransitionTargetLight=light;g_dncTransitionTargetSky=sky;g_dncTransitionTargetSun=sun;g_dncTransitionTargetSunEuler=dncNearestEuler(g_dncDesiredSunEuler,sunEuler);g_dncTransitionTargetSunRotation=sunRotation;g_dncManualDawnHandoverActive=previousProfile==2&&profile==3&&now!=0;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=true;g_dncTransitionTargetIntensity=intensity;g_dncTransitionTargetShadowStrength=shadowStrength;g_dncTransitionTargetProfile=profile;g_dncTransitionStartedAt=now;g_dncTransitionActive=now!=0;g_dncManualGradualSettleUntil=now?now+DNC_MANUAL_LIGHTING_TRANSITION_MS+DNC_MANUAL_GRADUAL_SETTLE_MS:0;
     const char* names[4]={"Day","Dusk","Night","Dawn"};char line[220];psprintf(line,"DAY & NIGHT CYCLE: smooth Manual transition to %s started (%llu ms).\r\n",profile>=0&&profile<4?names[profile]:"profile",(unsigned long long)DNC_MANUAL_LIGHTING_TRANSITION_MS);log_raw(line);
 }
 static bool p91_is_lodge(void* config){char name[256];object_name(config,name,sizeof(name));return contains_i(name,"Lodge_V1");}
@@ -605,23 +723,48 @@ static DNCLightingBaseline* dncFindLightingBaseline(u64 key,bool create){
     if(create&&empty){empty->used=true;empty->configKey=key;return empty;}return nullptr;
 }
 static void p93_reset_calendar_control();
+static bool dncCurrentPreferenceScopeMatches();
+static bool dncLightingEnvironmentMatchesReadyLevel(void* environment);
 static bool dncApplicationUnavailableOrBusy(){
     static Il2CppClass* appClass=nullptr;if(!appClass)appClass=find_class("TPS.Core","App");
     void* app=appClass?static_ref_field(appClass,"<Instance>k__BackingField"):nullptr;
     return !app||boxed_bool(field_object(app,"<IsQuitting>k__BackingField"))||boxed_bool(field_object(app,"<IsLoading>k__BackingField"));
+}
+static bool dncLightingEnvironmentIsPlayableLevel(void* environment){
+    void* lightingScene=environment?field_object(environment,"_lightingScene"):nullptr;
+    Il2CppClass* sceneClass=lightingScene?il2cpp_object_get_class((Il2CppObject*)lightingScene):nullptr;
+    const char* sceneName=sceneClass?il2cpp_class_get_name(sceneClass):nullptr;
+    const char* sceneNamespace=sceneClass?il2cpp_class_get_namespace(sceneClass):nullptr;
+    return streq(sceneName,"Level")&&streq(sceneNamespace?sceneNamespace:"","TPS.Game");
+}
+static bool dncActiveLightingSceneIsPlayableLevel(){
+    void* environment=g_p91LightingManager?field_object(g_p91LightingManager,"_activeLightingEnvironment"):nullptr;
+    return dncLightingEnvironmentIsPlayableLevel(environment);
+}
+static bool dncBoundLightingEnvironmentIsActive(){
+    void* environment=g_p91LightingManager?field_object(g_p91LightingManager,"_activeLightingEnvironment"):nullptr;
+    return environment&&environment==g_p91Environment&&dncLightingEnvironmentIsPlayableLevel(environment);
 }
 static void dncBeginMuseumTransition(){
     dncRestoreOctaluxGradualQuality();
     // Stored preferences remain untouched. Clear only the outgoing live mode
     // so a different save cannot display or apply it while its own scope is
     // still loading.
-    g_dncPreferencesReady=false;g_dncLightingHoldReady=false;g_dncTransitionActive=false;g_dncTransitionInitialised=false;g_dncTransitionTargetProfile=-1;g_dncManualGradualSettleUntil=0;g_p96AutoMode=0;g_dncGameClockLevel=nullptr;g_dncGameTime=nullptr;g_dncGetGameTime=nullptr;g_dncAutoExteriorActive=false;g_dncVirtualHour=-1.0;g_dncManualCommittedProfile=-1;g_dncManualCommittedGeneration=0;++g_dncLightingEnvironmentGeneration;
+    g_dncPreferencesReady=false;g_dncLightingHoldReady=false;g_dncTransitionActive=false;g_dncTransitionInitialised=false;g_dncManualDawnHandoverActive=false;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=true;g_dncTransitionTargetProfile=-1;g_dncManualGradualSettleUntil=0;g_p96AutoMode=0;g_dncGameClockLevel=nullptr;g_dncGameTime=nullptr;g_dncGetGameTime=nullptr;g_dncAutoExteriorActive=false;g_dncVirtualHour=-1.0;g_dncManualCommittedProfile=-1;g_dncManualCommittedGeneration=0;++g_dncLightingEnvironmentGeneration;
     // The retail lighting controller performs several authored-light pushes
     // shortly after the playable HUD first appears.  Keep the authored
     // baseline during that startup burst, then restore this museum's saved
     // profile once and let the frame-cadence hold take over.  This delay is
     // limited to museum entry/rebinding; user button changes remain immediate.
     u64 now=p78_clock?p78_clock():0;g_dncLightingEnvironmentReadyAt=now?now+DNC_LIGHTING_STARTUP_SETTLE_MS:0;
+}
+static void dncBeginSameMuseumLightingRefresh(){
+    dncRestoreOctaluxGradualQuality();
+    // Some modal game screens rebuild or briefly detach lighting objects even
+    // though the player remains in the same save, career and museum. Reset the
+    // object-specific state, but retain the selected mode/profile, preference
+    // scope and cycle clock so the chosen lighting can be reasserted at once.
+    g_dncLightingHoldReady=false;g_dncTransitionActive=false;g_dncTransitionInitialised=false;g_dncManualDawnHandoverActive=false;g_dncDirectLightIntensityFactor=1.0f;g_dncDirectLightShadowFactor=1.0f;g_dncShadowCasterEnabled=true;g_dncTransitionTargetProfile=-1;g_dncManualGradualSettleUntil=0;g_dncAutoExteriorActive=false;g_dncVirtualHour=-1.0;g_dncManualCommittedProfile=-1;g_dncManualCommittedGeneration=0;++g_dncLightingEnvironmentGeneration;g_dncLightingEnvironmentReadyAt=0;
 }
 static void dncReleaseActiveEnvironment(){
     if(g_p91Environment||g_p91Config||g_p91ExteriorLight||g_p91InteriorLight){p93_reset_calendar_control();dncBeginMuseumTransition();log_raw("DAY & NIGHT CYCLE: level transition detected; UI discovery and automatic lighting suspended.\r\n");}
@@ -641,10 +784,29 @@ static bool p91_resolve_lighting_manager(){
 // write through the previous scene's Light/LightingConfig pointers; instead,
 // re-check the persistent LightingManager and bind the current environment.
 static bool p91_bind_active_environment(){
-    if(dncApplicationUnavailableOrBusy()){dncReleaseActiveEnvironment();return false;}
+    if(dncApplicationUnavailableOrBusy()){
+        // Menus such as expedition rewards can raise the same loading flag as
+        // a level handover. Pause all lighting writes, but do not throw away a
+        // still-valid museum binding; the post-menu comparison below will
+        // decide whether this was a real museum change.
+        if(!g_dncApplicationWasTemporarilyBusy)log_raw("DAY & NIGHT CYCLE: temporary game loading state detected; lighting writes paused without clearing the current museum.\r\n");
+        g_dncApplicationWasTemporarilyBusy=true;g_dncLightingHoldReady=false;return false;
+    }
+    if(g_dncApplicationWasTemporarilyBusy){g_dncApplicationWasTemporarilyBusy=false;log_raw("DAY & NIGHT CYCLE: temporary game loading state ended; validating the active lighting environment.\r\n");}
     if(!p91_resolve_lighting_manager())return false;
     void* environment=field_object(g_p91LightingManager,"_activeLightingEnvironment");
     if(!environment){dncReleaseActiveEnvironment();return false;}
+    // Maps, level-select screens and expedition reward scenes create genuine
+    // LightingEnvironment objects of their own. Their _lightingScene owner is
+    // not TPS.Game.Level, so leave those environments entirely to the game and
+    // retain the last playable museum binding for an immediate return.
+    if(!dncLightingEnvironmentIsPlayableLevel(environment)){g_dncLightingHoldReady=false;return false;}
+    // During a museum handover the incoming LightingEnvironment can become
+    // active before LevelState, its playthrough identity and HUD are replaced.
+    // Do not bind or write through that half-constructed scene. This also keeps
+    // the 33 ms hold tick away from the outgoing Light pointers while the
+    // 150 ms environment tick waits for one coherent incoming Level.
+    if(!dncLightingEnvironmentMatchesReadyLevel(environment)){g_dncLightingHoldReady=false;return false;}
     void* config=field_object(environment,"_lightingConfig");
     if(!config)config=field_object(environment,"LightingConfig");
     void* exterior=field_object(environment,"_exteriorLight");
@@ -654,11 +816,13 @@ static bool p91_bind_active_environment(){
         // The old CalendarUI is destroyed during a museum transition.  Never
         // retain its cloned button/RectTransform into the incoming scene.
         p93_reset_calendar_control();
-        dncBeginMuseumTransition();
+        int retainedProfile=g_p91Profile;bool sameMuseumRefresh=g_p91Environment&&dncCurrentPreferenceScopeMatches();
+        if(sameMuseumRefresh){dncBeginSameMuseumLightingRefresh();log_raw("DAY & NIGHT CYCLE: lighting objects refreshed within the current museum; selected lighting retained without startup delay.\r\n");}
+        else dncBeginMuseumTransition();
         g_p91Config=config;g_p91ExteriorLight=exterior;g_p91InteriorLight=interior;g_p91Environment=environment;g_p91Captured=false;g_p91IsLodge=p91_is_lodge(config);
         g_dncPushLightingSettings=find_method0_hierarchy(il2cpp_object_get_class((Il2CppObject*)environment),"PushLightingRenderSettings");Il2CppClass* configClass=il2cpp_object_get_class((Il2CppObject*)config);g_dncGetSunUnityLightColor=find_method0_hierarchy(configClass,"get_SunUnityLightColor");g_dncGetSunUnityLightIntensity=find_method0_hierarchy(configClass,"get_SunUnityLightIntensity");dncResolveOctaluxSkyRoute();
         // Lodge's authored/default lighting is Night. Other museums open in Day.
-        g_p91Profile=g_p91IsLodge?2:0;
+        g_p91Profile=sameMuseumRefresh?retainedProfile:(g_p91IsLodge?2:0);
         log_raw(g_p91IsLodge?"DAY & NIGHT CYCLE: Wailon Lodge bound; its authored night is selected by default.\r\n":"DAY & NIGHT CYCLE: exterior lighting bound.\r\n");
     }
     return true;
@@ -668,6 +832,7 @@ static bool p91_bind_active_environment(){
 // behaviour and handles only our small hit target. No external UI object is
 // queried or modified here.
 static void* g_p93ControlGO=nullptr; static void* g_p93ControlTr=nullptr; static bool g_p93MouseWasDown=false;
+static bool g_dncAuxiliaryScreenLightingSuspended=false;
 static void* g_p93TimelineHostGO=nullptr;static void* g_p93SpeedDonorGO=nullptr;static void* g_p93DateLabelDonorGO=nullptr;
 static bool g_p96RightMouseWasDown=false;
 static int g_p96LastProfile=-1;
@@ -719,10 +884,18 @@ static void* g_p103TabTooltipTargets[2]{};
 static bool g_p103TabHovered[2]{};
 static int g_p95ButtonVariant=0;
 #include "DayNightPreferences.h"
+static bool dncPlayableMuseumUiActive(){
+    return dncBoundLightingEnvironmentIsActive()&&g_p93ControlGO;
+}
+static bool dncLightingEnvironmentMatchesReadyLevel(void* environment){
+    if(!environment)return false;void* lightingLevel=field_object(environment,"_lightingScene");DNCPreferenceScope current{};void* currentLevel=nullptr;return lightingLevel&&dncPreferenceCurrentScope(current,currentLevel)&&currentLevel==lightingLevel;
+}
+static bool dncCurrentPreferenceScopeMatches(){
+    if(!g_dncPreferenceHaveScope)return false;DNCPreferenceScope current{};void* level=nullptr;return dncPreferenceCurrentScope(current,level)&&dncPreferenceSameScope(current,g_dncPreferenceScope);
+}
 static int g_dncManualProfile=0;
 // Full-strength hold lengths in hundredths of a virtual hour. The four smooth
 // transition windows retain their accepted 3h/2h/1h/2h lengths.
-static u32 g_dncPhaseHoldUnits[4]={100,900,200,400};
 // UI phases are presented in chronological Dawn/Day/Dusk/Night order. Each
 // visible total includes that state's following transition, so the four bar
 // sections and labels add up to the complete 24-hour virtual day.
@@ -891,10 +1064,10 @@ static void dncComputeProfileTarget(int profile,F4& color,F4& sky,F4& sun,float&
     color=g_p91DayColor;sky=g_p91DaySkyColor;sun=g_p91DaySunColor;intensity=g_p91DayIntensity;shadowStrength=g_p91DayShadowStrength;
     if(g_p91IsLodge){
         if(profile==0){color=F4{g_p91DayColor.x*2.00f,g_p91DayColor.y*2.00f,g_p91DayColor.z*2.00f,1};sun=F4{g_p91DaySunColor.x*2.00f,g_p91DaySunColor.y*2.00f,g_p91DaySunColor.z*2.00f,1};sky=F4{0.75f,0.85f,1.00f,1};intensity*=1.25f;}
-        if(profile==1){color=F4{g_p91DayColor.x*1.45f,g_p91DayColor.y*1.45f,g_p91DayColor.z*1.45f,1};sun=F4{g_p91DaySunColor.x*1.45f,g_p91DaySunColor.y*1.45f,g_p91DaySunColor.z*1.45f,1};sky=F4{0.60f,0.70f,0.85f,1};intensity*=1.10f;shadowStrength*=0.50f;}
+        if(profile==1){color=F4{g_p91DayColor.x*1.45f,g_p91DayColor.y*1.45f,g_p91DayColor.z*1.45f,1};sun=F4{g_p91DaySunColor.x*1.45f,g_p91DaySunColor.y*1.45f,g_p91DaySunColor.z*1.45f,1};sky=F4{0.60f,0.70f,0.85f,1};intensity*=1.10f;shadowStrength*=0.42f;}
     }else{
-        if(profile==3){color=F4{g_p91DayColor.x*0.82f,g_p91DayColor.y*0.70f,g_p91DayColor.z*0.62f,1};sun=F4{g_p91DaySunColor.x*0.62f,g_p91DaySunColor.y*0.48f,g_p91DaySunColor.z*0.42f,1};sky=F4{1.05f,0.95f,0.90f,1};intensity*=0.72f;shadowStrength*=0.55f;}
-        if(profile==1){color=F4{g_p91DayColor.x*0.68f,g_p91DayColor.y*0.50f,g_p91DayColor.z*0.38f,1};sun=F4{g_p91DaySunColor.x*0.30f,g_p91DaySunColor.y*0.24f,g_p91DaySunColor.z*0.28f,1};sky=F4{0.90f,1.00f,1.30f,1};intensity*=0.55f;shadowStrength*=0.35f;}
+        if(profile==3){color=F4{g_p91DayColor.x*0.82f,g_p91DayColor.y*0.70f,g_p91DayColor.z*0.62f,1};sun=F4{g_p91DaySunColor.x*0.62f,g_p91DaySunColor.y*0.48f,g_p91DaySunColor.z*0.42f,1};sky=F4{1.05f,0.95f,0.90f,1};intensity*=0.72f;shadowStrength*=0.48f;}
+        if(profile==1){color=F4{g_p91DayColor.x*0.72f,g_p91DayColor.y*0.52f,g_p91DayColor.z*0.38f,1};sun=F4{g_p91DaySunColor.x*0.38f,g_p91DaySunColor.y*0.25f,g_p91DaySunColor.z*0.20f,1};sky=F4{0.98f,0.92f,1.05f,1};intensity*=0.55f;shadowStrength*=0.30f;}
         if(profile==2){color=F4{g_p91DayColor.x*0.42f,g_p91DayColor.y*0.27f,g_p91DayColor.z*0.18f,1};sun=F4{g_p91DaySunColor.x*0.035f,g_p91DaySunColor.y*0.030f,g_p91DaySunColor.z*0.060f,1};sky=F4{0.55f,0.60f,0.90f,1};intensity*=0.34f;shadowStrength=0.0f;}
     }
     // Use the game's nonlinear HDR conversion so automatic hold endpoints
@@ -905,7 +1078,7 @@ static void dncProfileTarget(int profile,F4& color,F4& sky,F4& sun,float& intens
     if(g_dncProfileEndpointGeneration!=g_dncLightingEnvironmentGeneration){for(int i=0;i<4;++i){DNCProfileEndpoint& endpoint=g_dncProfileEndpoints[i];dncComputeProfileTarget(i,endpoint.color,endpoint.sky,endpoint.sun,endpoint.intensity,endpoint.shadowStrength);}g_dncProfileEndpointGeneration=g_dncLightingEnvironmentGeneration;}
     if(profile<0||profile>3)profile=0;const DNCProfileEndpoint& endpoint=g_dncProfileEndpoints[profile];color=endpoint.color;sky=endpoint.sky;sun=endpoint.sun;intensity=endpoint.intensity;shadowStrength=endpoint.shadowStrength;
 }
-struct DNCCyclePhase{int fromProfile,toProfile,displayProfile;float blend;double hour;};
+struct DNCCyclePhase{int fromProfile,toProfile,displayProfile;float blend,transitionProgress;bool shadowCasterEnabled;double hour;};
 static DNCCyclePhase dncCyclePhaseAt(double hour){
     const double dawnHold=(double)g_dncPhaseHoldUnits[0]/100.0;
     const double dayHold=(double)g_dncPhaseHoldUnits[1]/100.0;
@@ -913,15 +1086,22 @@ static DNCCyclePhase dncCyclePhaseAt(double hour){
     const double nightHold=(double)g_dncPhaseHoldUnits[3]/100.0;
     const double nightLead=nightHold*0.5;
     double cursor=nightLead;
-    DNCCyclePhase phase{2,2,2,0,hour};
-    if(hour<cursor){/* leading half of the Night hold */}
-    else if(hour<(cursor+=3.0)){phase.fromProfile=2;phase.toProfile=3;phase.blend=dncSmoothStep01((float)((hour-(cursor-3.0))/3.0));}
-    else if(hour<(cursor+=dawnHold)){phase.fromProfile=phase.toProfile=3;}
-    else if(hour<(cursor+=2.0)){phase.fromProfile=3;phase.toProfile=0;phase.blend=dncSmoothStep01((float)((hour-(cursor-2.0))/2.0));}
-    else if(hour<(cursor+=dayHold)){phase.fromProfile=phase.toProfile=0;}
-    else if(hour<(cursor+=1.0)){phase.fromProfile=0;phase.toProfile=1;phase.blend=dncSmoothStep01((float)(hour-(cursor-1.0)));}
-    else if(hour<(cursor+=duskHold)){phase.fromProfile=phase.toProfile=1;}
-    else if(hour<(cursor+=2.0)){phase.fromProfile=1;phase.toProfile=2;phase.blend=dncSmoothStep01((float)((hour-(cursor-2.0))/2.0));}
+    DNCCyclePhase phase{2,2,2,0,0,true,hour};
+    if(hour<cursor){phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=3.0)){float progress=(float)((hour-(cursor-3.0))/3.0);phase.fromProfile=2;phase.toProfile=3;phase.blend=dncSmoothStep01(progress);phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=dawnHold)){phase.fromProfile=phase.toProfile=3;phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=2.0)){phase.fromProfile=3;phase.toProfile=0;phase.blend=dncSmoothStep01((float)((hour-(cursor-2.0))/2.0));phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=dayHold)){phase.fromProfile=phase.toProfile=0;phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=1.0)){phase.fromProfile=0;phase.toProfile=1;phase.blend=dncSmoothStep01((float)(hour-(cursor-1.0)));phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=duskHold)){phase.fromProfile=phase.toProfile=1;phase.shadowCasterEnabled=true;}
+    else if(hour<(cursor+=2.0)){float progress=(float)((hour-(cursor-2.0))/2.0);phase.fromProfile=1;phase.toProfile=2;phase.transitionProgress=progress;phase.blend=dncSmoothStep01(progress);phase.shadowCasterEnabled=true;}
+    else{
+        // Dusk is already at zero shadow strength. Leave the caster armed as
+        // direct light fades out, disable it only for the invisible rotation,
+        // then restore it at zero light for the final fade-in. It remains ready
+        // throughout the rest of Night so Dawn has no binary mode change.
+        double handoverStart=0.0,handoverDuration=0.0;dncNightHandoverWindow(nightLead,handoverStart,handoverDuration);double relocateStart=handoverStart+handoverDuration/3.0,relocateEnd=handoverStart+handoverDuration*2.0/3.0;phase.shadowCasterEnabled=handoverDuration<=0.0||hour<relocateStart||hour>=relocateEnd;
+    }
     // The remaining tail is the second half of the Night hold. Since the four
     // saved holds total 16h and transitions total 8h, cursor always lands at
     // 24h minus half the Night hold.
@@ -934,7 +1114,16 @@ static void p96_apply_auto_cycle(){
     if(!g_dncAutoExteriorActive||g_dncAutoExteriorGeneration!=g_dncLightingEnvironmentGeneration){set_field_f4(g_p91Config,"SunColor",g_p91DaySunColor);set_field_f4(g_p91Config,"SkyColor",g_p91DaySkyColor);if(g_p91Environment&&g_dncPushLightingSettings)invoke(g_dncPushLightingSettings,g_p91Environment,nullptr);g_dncAutoExteriorActive=true;g_dncAutoExteriorGeneration=g_dncLightingEnvironmentGeneration;log_raw("DAY & NIGHT CYCLE: automatic mode restored the authored baseline once; continuous testing now isolates Octalux sky colour plus its keyword refresh.\r\n");}
     double spanDays=g_p96AutoMode==1?DNC_DAYS_PER_WEEK:DNC_DAYS_PER_MONTH;double cycles=(gameTime/DNC_GAME_SECONDS_PER_DAY)/spanDays;i64 whole=(i64)cycles;double fraction=cycles-(double)whole;if(fraction<0)fraction+=1.0;double hour=fraction*24.0;DNCCyclePhase phase=dncCyclePhaseAt(hour);
     F4 fromColor{},fromSky{},fromSun{},toColor{},toSky{},toSun{};float fromIntensity=0,fromShadow=1,toIntensity=0,toShadow=1;dncProfileTarget(phase.fromProfile,fromColor,fromSky,fromSun,fromIntensity,fromShadow);dncProfileTarget(phase.toProfile,toColor,toSky,toSun,toIntensity,toShadow);
-    g_dncDesiredLightColor=dncLerpF4(fromColor,toColor,phase.blend);g_dncDesiredSkyColor=dncLerpF4(fromSky,toSky,phase.blend);g_dncDesiredSunColor=dncLerpF4(fromSun,toSun,phase.blend);g_dncDesiredIntensity=dncLerpFloat(fromIntensity,toIntensity,phase.blend);g_dncDesiredShadowStrength=dncLerpFloat(fromShadow,toShadow,phase.blend);g_dncVirtualHour=hour;g_p91Profile=phase.displayProfile;g_dncLightingHoldReady=true;
+    float twilightFactor=1.0f;DNCSunPose sunPose=dncSunPoseAtHour(hour,&twilightFactor);g_dncDesiredLightColor=dncLerpF4(fromColor,toColor,phase.blend);g_dncDesiredSkyColor=dncLerpF4(fromSky,toSky,phase.blend);g_dncDesiredSunColor=dncLerpF4(fromSun,toSun,phase.blend);g_dncDesiredSunEuler=sunPose.euler;g_dncDesiredSunRotation=sunPose.rotation;g_dncDesiredIntensity=dncLerpFloat(fromIntensity,toIntensity,phase.blend);g_dncDesiredShadowStrength=dncLerpFloat(fromShadow,toShadow,phase.blend);g_dncShadowStrengthIsFinal=false;
+    if(phase.fromProfile==1&&phase.toProfile==2){
+        // Hold the readable Dusk shadow briefly, then dissolve it once across
+        // the darker 80% of twilight. Use the actual applied Dusk strength as
+        // the start so entering this curve is continuous and does not brighten.
+        float duskIntensityFactor=g_p91DayIntensity>0.0001f?fromIntensity/g_p91DayIntensity:1.0f;if(duskIntensityFactor<0.0f)duskIntensityFactor=0.0f;if(duskIntensityFactor>1.0f)duskIntensityFactor=1.0f;
+        float fadeProgress=(phase.transitionProgress-0.20f)/0.80f;if(fadeProgress<0.0f)fadeProgress=0.0f;if(fadeProgress>1.0f)fadeProgress=1.0f;
+        g_dncDesiredShadowStrength=fromShadow*dncSqrt01(duskIntensityFactor)*(1.0f-dncSmoothStep01(fadeProgress));g_dncShadowStrengthIsFinal=true;
+    }
+    g_dncDirectLightIntensityFactor=twilightFactor;g_dncDirectLightShadowFactor=twilightFactor;g_dncShadowCasterEnabled=phase.shadowCasterEnabled;g_dncManualDawnHandoverActive=false;g_dncVirtualHour=hour;g_p91Profile=phase.displayProfile;g_dncLightingHoldReady=true;
     // Convert after interpolating HDR, rather than interpolating the already
     // converted endpoint intensities. This preserves the game's tone response
     // throughout the transition and exactly matches Manual at every hold.
@@ -944,13 +1133,33 @@ static void p96_apply_auto_cycle(){
 }
 static int dncShaderPropertyId(const char* property){if(!property||!M_Shader_PropertyToID)return 0;Il2CppString* name=il2cpp_string_new(property);void* a[1]={name};return boxed_i32(invoke(M_Shader_PropertyToID,nullptr,a),0);}
 static void dncSetGlobalColor(int propertyId,F4& color){if(!propertyId||!M_Shader_SetGlobalColorInt)return;void* args[2]={&propertyId,&color};invoke(M_Shader_SetGlobalColorInt,nullptr,args);}
-static void dncApplyLightTarget(void* light){if(!light)return;void* colorArgs[]={&g_dncDesiredLightColor};invoke(M_Light_set_color,light,colorArgs);void* intensityArgs[]={&g_dncDesiredIntensity};invoke(M_Light_set_intensity,light,intensityArgs);if(M_Light_set_shadowStrength){void* shadowArgs[]={&g_dncDesiredShadowStrength};invoke(M_Light_set_shadowStrength,light,shadowArgs);}}
+static void dncApplyLightTarget(void* light){
+    if(!light)return;
+    float appliedIntensity=g_dncDesiredIntensity*g_dncDirectLightIntensityFactor;
+    // Unity shadow strength is independent of Light intensity. Couple it to
+    // the museum's captured daytime intensity so low dawn/dusk light cannot
+    // retain disproportionately dark, hard shadows. A square-root response
+    // preserves useful mid-light shadow contrast while still reaching zero
+    // with the direct light. This final-output factor is shared by Manual and
+    // Automatic without recalculating interior light.
+    float intensityShadowFactor=1.0f;if(!g_dncShadowStrengthIsFinal){intensityShadowFactor=g_p91DayIntensity>0.0001f?appliedIntensity/g_p91DayIntensity:1.0f;if(intensityShadowFactor<0.0f)intensityShadowFactor=0.0f;if(intensityShadowFactor>1.0f)intensityShadowFactor=1.0f;intensityShadowFactor=dncSqrt01(intensityShadowFactor);}
+    float appliedShadowStrength=g_dncDesiredShadowStrength*g_dncDirectLightShadowFactor*intensityShadowFactor;
+    // Keep Unity's caster armed throughout both visible twilight transitions.
+    // Automatic mode disables it only while the sun relocates at zero direct
+    // light, then restores it at zero strength so its map stabilises long before
+    // Dawn begins. Apply the mode first so any Unity side effect is overwritten
+    // by the intended zero strength in this same tick. Manual mode retains its
+    // own hidden handover lifecycle.
+    if(M_Light_get_shadows&&M_Light_set_shadows){int wantedShadowMode=g_dncShadowCasterEnabled?g_p91DayShadowMode:0;int currentShadowMode=boxed_i32(invoke(M_Light_get_shadows,light,nullptr),wantedShadowMode);if(currentShadowMode!=wantedShadowMode){void* modeArgs[1]={&wantedShadowMode};invoke(M_Light_set_shadows,light,modeArgs);}}
+    void* colorArgs[]={&g_dncDesiredLightColor};invoke(M_Light_set_color,light,colorArgs);void* intensityArgs[]={&appliedIntensity};invoke(M_Light_set_intensity,light,intensityArgs);if(M_Light_set_shadowStrength){void* shadowArgs[]={&appliedShadowStrength};invoke(M_Light_set_shadowStrength,light,shadowArgs);}
+}
 static void dncApplyDirectLightingTargets(){
     static bool propertyResolved=false,routeLogged=false;static int mainLightColorId=0;
     if(!propertyResolved){propertyResolved=true;mainLightColorId=dncShaderPropertyId("_TwoPointMainLightColor");}
-    dncSetGlobalColor(mainLightColorId,g_dncDesiredSunColor);
+    F4 appliedMainLightColor{g_dncDesiredSunColor.x*g_dncDirectLightIntensityFactor,g_dncDesiredSunColor.y*g_dncDirectLightIntensityFactor,g_dncDesiredSunColor.z*g_dncDirectLightIntensityFactor,g_dncDesiredSunColor.w};dncSetGlobalColor(mainLightColorId,appliedMainLightColor);
     dncApplyLightTarget(g_p91ExteriorLight);
-    if(!routeLogged){routeLogged=true;log_raw("DAY & NIGHT CYCLE: stable automatic route applies game-converted HDR colour/intensity to the exterior Light only.\r\n");}
+    if(g_p91ExteriorLight&&M_Component_get_transform){void* transform=invoke(M_Component_get_transform,g_p91ExteriorLight,nullptr);if(transform){if(M_Transform_get_rotation&&M_Transform_set_rotation&&M_Quaternion_Euler){void* rotationArgs[1]={&g_dncDesiredSunRotation};invoke(M_Transform_set_rotation,transform,rotationArgs);}else if(M_Transform_set_eulerAngles){void* rotationArgs[1]={&g_dncDesiredSunEuler};invoke(M_Transform_set_eulerAngles,transform,rotationArgs);}}}
+    if(!routeLogged){routeLogged=true;log_raw("DAY & NIGHT CYCLE: stable route applies game-converted HDR colour/intensity and a normalized directional sun arc to the exterior Light only.\r\n");}
 }
 static void dncRestoreOctaluxGradualQuality(){
     if(!g_dncOctaluxGradualQualityTuned||!g_dncOctaluxQualitySettings)return;
@@ -986,7 +1195,7 @@ static void dncApplyPreferencesForCurrentMuseum(){
     // The lighting environment can appear before LevelState and CalendarUI
     // finish replacing the outgoing museum. Wait for the playable HUD and a
     // short stable interval before touching either identity graph.
-    if(!g_p93ControlGO)return;
+    if(!dncPlayableMuseumUiActive())return;
     u64 now=p78_clock?p78_clock():0;if(g_dncLightingEnvironmentReadyAt&&now<g_dncLightingEnvironmentReadyAt)return;
     // An unseen museum starts from the mod's own Manual/Day default. Never
     // seed it from the previous museum's live profile.
@@ -1338,6 +1547,22 @@ static void p93_calendar_control_tick(){
     // Sandbox transitions. Never enumerate every loaded GameObject while the
     // application is loading or no playable lighting environment is active.
     if(dncApplicationUnavailableOrBusy()||!g_p91Environment){g_dncLightingHoldReady=false;if(g_p93ControlGO)p93_reset_calendar_control();return;}
+    // Full-screen maps and reward scenes keep a CalendarUI donor alive, so UI
+    // activity is not a reliable boundary. The active LightingEnvironment's
+    // ILightingScene owner is: only TPS.Game.Level is a playable museum.
+    if(!dncActiveLightingSceneIsPlayableLevel()){
+        if(!g_dncAuxiliaryScreenLightingSuspended)log_raw("DAY & NIGHT CYCLE: non-Level lighting scene detected; museum lighting writes suspended for auxiliary screen.\r\n");
+        g_dncAuxiliaryScreenLightingSuspended=true;g_dncLightingHoldReady=false;return;
+    }
+    // A new playable environment can precede the 150 ms binding tick. Keep
+    // the auxiliary suspension in place until the binder has replaced every
+    // retained Light/config pointer, otherwise the fast hold tick can write to
+    // an object destroyed by the museum transition.
+    if(!dncBoundLightingEnvironmentIsActive()){g_dncLightingHoldReady=false;if(g_p93ControlGO)p93_reset_calendar_control();return;}
+    if(g_dncAuxiliaryScreenLightingSuspended){
+        g_dncAuxiliaryScreenLightingSuspended=false;g_dncLightingHoldReady=g_p91Captured&&g_dncPreferencesReady;
+        log_raw("DAY & NIGHT CYCLE: playable Level lighting scene restored; retained museum lighting resumed without a new transition.\r\n");
+    }
     if(!g_p93ControlGO){
         // Resource-wide UI discovery is intentionally infrequent. Running it
         // on the 33 ms message tick can starve Campaign's level loader.
@@ -1385,29 +1610,32 @@ static void p91_exterior_light_tick(){
     if(!p91_bind_active_environment()||!M_Light_set_color||!M_Light_set_intensity)return;
     if(!g_p91Captured){
         u64 configKey=dncLightingConfigKey(g_p91Config);DNCLightingBaseline* baseline=dncFindLightingBaseline(configKey,false);bool reused=baseline!=nullptr;
-        if(reused){g_p91DayColor=baseline->lightColor;g_p91DaySkyColor=baseline->skyColor;g_p91DaySunColor=baseline->sunColor;g_p91DayIntensity=baseline->intensity;g_p91DayShadowStrength=baseline->shadowStrength;}
+        if(reused){g_p91DayColor=baseline->lightColor;g_p91DaySkyColor=baseline->skyColor;g_p91DaySunColor=baseline->sunColor;g_p91DaySunEuler=baseline->sunEuler;g_p91DaySunRotation=baseline->sunRotation;g_p91DayIntensity=baseline->intensity;g_p91DayShadowStrength=baseline->shadowStrength;g_p91DayShadowMode=baseline->shadowMode;}
         else {
             const MethodInfo* gc=find_method0_hierarchy(il2cpp_object_get_class((Il2CppObject*)g_p91Config),"get_SunUnityLightColor");
             const MethodInfo* gi=find_method0_hierarchy(il2cpp_object_get_class((Il2CppObject*)g_p91Config),"get_SunUnityLightIntensity");
             g_p91DayColor=gc?read_boxed_f4(invoke(gc,g_p91Config,nullptr)):field_f4(g_p91Config,"SunColor");
             g_p91DayIntensity=gi?boxed_float(invoke(gi,g_p91Config,nullptr),0.0f):1.0f;
             g_p91DaySkyColor=field_f4(g_p91Config,"SkyColor");g_p91DaySunColor=field_f4(g_p91Config,"SunColor");
-            g_p91DayShadowStrength=M_Light_get_shadowStrength?boxed_float(invoke(M_Light_get_shadowStrength,g_p91ExteriorLight,nullptr),1.0f):1.0f;
-            baseline=dncFindLightingBaseline(configKey,true);if(baseline){baseline->lightColor=g_p91DayColor;baseline->skyColor=g_p91DaySkyColor;baseline->sunColor=g_p91DaySunColor;baseline->intensity=g_p91DayIntensity;baseline->shadowStrength=g_p91DayShadowStrength;}
+            void* exteriorTransform=M_Component_get_transform?invoke(M_Component_get_transform,g_p91ExteriorLight,nullptr):nullptr;g_p91DaySunEuler=(exteriorTransform&&M_Transform_get_eulerAngles)?read_boxed_f3(invoke(M_Transform_get_eulerAngles,exteriorTransform,nullptr)):F3{0,0,0};g_p91DaySunRotation=(exteriorTransform&&M_Transform_get_rotation)?dncNormalizeQuaternion(read_boxed_f4(invoke(M_Transform_get_rotation,exteriorTransform,nullptr))):F4{0,0,0,1};
+            g_p91DayShadowStrength=M_Light_get_shadowStrength?boxed_float(invoke(M_Light_get_shadowStrength,g_p91ExteriorLight,nullptr),1.0f):1.0f;g_p91DayShadowMode=M_Light_get_shadows?boxed_i32(invoke(M_Light_get_shadows,g_p91ExteriorLight,nullptr),2):2;
+            baseline=dncFindLightingBaseline(configKey,true);if(baseline){baseline->lightColor=g_p91DayColor;baseline->skyColor=g_p91DaySkyColor;baseline->sunColor=g_p91DaySunColor;baseline->sunEuler=g_p91DaySunEuler;baseline->sunRotation=g_p91DaySunRotation;baseline->intensity=g_p91DayIntensity;baseline->shadowStrength=g_p91DayShadowStrength;baseline->shadowMode=g_p91DayShadowMode;}
         }
-        g_p91Captured=true;char b[420];psprintf(b,"DAY & NIGHT CYCLE: museum baseline %s key=%llu colour=(%.3f,%.3f,%.3f) intensity=%.3f.\r\n",reused?"restored from immutable cache":"captured",(unsigned long long)configKey,(double)g_p91DayColor.x,(double)g_p91DayColor.y,(double)g_p91DayColor.z,(double)g_p91DayIntensity);log_raw(b);
+        g_dncDesiredSunEuler=g_p91DaySunEuler;g_dncDesiredSunRotation=g_p91DaySunRotation;g_p91Captured=true;char b[560];psprintf(b,"DAY & NIGHT CYCLE: museum baseline %s key=%llu colour=(%.3f,%.3f,%.3f) intensity=%.3f shadowMode=%d authored noon rotation=(%.2f,%.2f,%.2f).\r\n",reused?"restored from immutable cache":"captured",(unsigned long long)configKey,(double)g_p91DayColor.x,(double)g_p91DayColor.y,(double)g_p91DayColor.z,(double)g_p91DayIntensity,g_p91DayShadowMode,(double)g_p91DaySunEuler.x,(double)g_p91DaySunEuler.y,(double)g_p91DaySunEuler.z);log_raw(b);
     }
     dncApplyPreferencesForCurrentMuseum();
+    // Require both the playable Level lighting owner and its HUD control before
+    // projecting museum lighting. Auxiliary scenes retain their authored setup.
+    if(!dncPlayableMuseumUiActive()||!g_dncPreferencesReady){g_dncLightingHoldReady=false;return;}
     if(g_p96AutoMode){g_dncManualCommittedProfile=-1;return;}
-    dncRestoreOctaluxGradualQuality();
-    bool leavingAutomatic=g_dncAutoExteriorActive;g_dncAutoExteriorActive=false;F4 color{},sky{},sun{};float intensity=0,shadowStrength=1;dncProfileTarget(g_p91Profile,color,sky,sun,intensity,shadowStrength);
+    bool leavingAutomatic=g_dncAutoExteriorActive;g_dncAutoExteriorActive=false;F4 color{},sky{},sun{};float intensity=0,shadowStrength=1;dncProfileTarget(g_p91Profile,color,sky,sun,intensity,shadowStrength);DNCSunPose sunPose=dncSunPoseAtHour(dncManualProfileHour(g_p91Profile));
     if(leavingAutomatic){
         // Begin at the exact interpolated Automatic frame currently visible,
         // rather than jumping back to the last remembered Manual endpoint.
         g_dncTransitionEnvironmentGeneration=g_dncLightingEnvironmentGeneration;g_dncTransitionInitialised=true;g_dncTransitionActive=false;g_dncTransitionTargetProfile=-1;g_dncTransitionStartedAt=0;g_dncManualGradualSettleUntil=0;
-        g_dncTransitionStartLight=g_dncTransitionTargetLight=g_dncDesiredLightColor;g_dncTransitionStartSky=g_dncTransitionTargetSky=g_dncDesiredSkyColor;g_dncTransitionStartSun=g_dncTransitionTargetSun=g_dncDesiredSunColor;g_dncTransitionStartIntensity=g_dncTransitionTargetIntensity=g_dncDesiredIntensity;g_dncTransitionStartShadowStrength=g_dncTransitionTargetShadowStrength=g_dncDesiredShadowStrength;
+        g_dncTransitionStartLight=g_dncTransitionTargetLight=g_dncDesiredLightColor;g_dncTransitionStartSky=g_dncTransitionTargetSky=g_dncDesiredSkyColor;g_dncTransitionStartSun=g_dncTransitionTargetSun=g_dncDesiredSunColor;g_dncTransitionStartSunEuler=g_dncTransitionTargetSunEuler=g_dncDesiredSunEuler;g_dncTransitionStartSunRotation=g_dncTransitionTargetSunRotation=g_dncDesiredSunRotation;g_dncTransitionStartIntensity=g_dncTransitionTargetIntensity=g_dncDesiredIntensity;g_dncTransitionStartShadowStrength=g_dncTransitionTargetShadowStrength=g_dncDesiredShadowStrength;
     }
-    dncSetLightingTransitionTarget(g_p91Profile,color,sky,sun,intensity,shadowStrength);dncAdvanceLightingTransition(p78_clock?p78_clock():0);
+    dncSetLightingTransitionTarget(g_p91Profile,color,sky,sun,sunPose.euler,sunPose.rotation,intensity,shadowStrength);dncAdvanceLightingTransition(p78_clock?p78_clock():0);
     // Never commit Manual through PushLightingRenderSettings: even a single
     // complete push requests Octalux's noisy rebuild and causes room glitter.
     // Record the destination config only after the smooth transition finishes;
@@ -1418,6 +1646,7 @@ static void p91_exterior_light_tick(){
     dncApplyOctaluxSky();g_dncLightingHoldReady=true;
 }
 static void p91_hold_lighting_tick(){
+    if(!dncPlayableMuseumUiActive()){g_dncLightingHoldReady=false;return;}
     if(!g_dncLightingHoldReady||!g_p91Captured||!g_p91Config||!g_p91Environment||!g_p91ExteriorLight||!g_p91InteriorLight)return;
     if(g_p96AutoMode){p96_apply_auto_cycle();if(!g_dncAutoExteriorActive)return;dncApplyOctaluxSky();g_dncLightingHoldReady=true;return;}
     // A UI click can leave automatic mode between the fast UI tick and the
